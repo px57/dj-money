@@ -1,5 +1,5 @@
 from django.contrib import admin
-from money.models import Account, TransfertModels
+from money.models import Account, TransfertModels, BankAccountModels
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
@@ -18,3 +18,15 @@ class TransfertModelsAdmin(admin.ModelAdmin):
         # 'status',
     ]
 
+
+@admin.register(BankAccountModels)
+class BankAccountModelsAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "profile",
+        "account_name",
+        "bankNumberType",
+        "jsonBankNumber",
+        "status",
+    ]
+    list_filter = []
