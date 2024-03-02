@@ -168,11 +168,11 @@ class TransfertModels(BaseMetadataModel):
 
     # -> Le compte d'origine.
     source = models.ForeignKey(
-        'Account', 
-        on_delete=models.CASCADE, 
+        'Account',
+        on_delete=models.CASCADE,
         related_name='source',
         null=True,
-        blank=True
+        blank=True,
     )
 
     # -> Le compte de destination.
