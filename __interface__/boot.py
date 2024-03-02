@@ -27,4 +27,4 @@ class MoneyBoot(DefaultRuleClass):
         }
         # -> load the service to get the balance
 
-BOOT_RULESTACK.set_rule(MoneyBoot())
+BOOT_RULESTACK.set_rule(MoneyBoot)
