@@ -136,6 +136,7 @@ class TransfertModels(BaseMetadataModel):
     """
         @description: 
     """
+
     # -> Type comptable.
     accounting_type = models.CharField(
         max_length=255,

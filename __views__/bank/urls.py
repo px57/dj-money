@@ -7,12 +7,14 @@ from . import views
 
 
 urlpatterns = [
-    path("fetch_info/", views.fetch_info, name="fetch_info"),
-    # path("save_account/", views.save_account, name="save_account"),
-    # path("transfert/", views.transfert, name="transfert"),
-    # path("bank_account/", include("money.bank_account.urls")),
-    # path("promo_code_manager/", include("money.promo_code_manager.urls")),
-    # path("history/", include("money.history.urls")),
-    # path("stripe/", include("money.stripe.urls")),
-    # path("talkto_card/", include("money.talkto_card.urls")),
+    path(
+        "fetch_info/", 
+        views.fetch_info, 
+        name="money__bank__fetch_info"
+    ),
+    path(
+        "add_bank_account/", 
+        views.add_bank_account, 
+        name="money__bank__add_bank_account"
+    ),
 ]
