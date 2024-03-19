@@ -1,14 +1,38 @@
 from django.db import models
 from django.forms.models import model_to_dict
+from django.conf import settings
+
+from datetime import timedelta
 
 from kernel.models.base_metadata_model import BaseMetadataModel
 
 from profiles.models import Profile
 
+from money.rules.stack import MONEY_RULESTACK
+
 import json
 
 def convert_to_decimal(value):
     return value / 1000
+
+
+class Price(BaseMetadataModel):
+    """
+    The price model.
+    """
+    price = models.PositiveBigIntegerField(
+        default=0,
+    )
+
+    currency = models.CharField(
+        max_length=100,
+        default=settings.MONEY_DEFAULT_CURRENCY,
+        choices=settings.MONEY_LIST_CURRENCY,
+    )
+
+    @property
+    def decimal_price(self):
+        return convert_to_decimal(self.price)
 
 class BankAccountModels(BaseMetadataModel):
     """
@@ -22,7 +46,10 @@ class BankAccountModels(BaseMetadataModel):
         on_delete=models.CASCADE,
     )
 
-    account_name = models.CharField(max_length=100, default="")
+    account_name = models.CharField(
+        max_length=100, 
+        default=""
+    )
 
     bankNumberType = models.CharField(
         max_length=100,
@@ -137,6 +164,14 @@ class TransfertModels(BaseMetadataModel):
         @description: 
     """
 
+    interface = models.CharField(
+        max_length=100,
+        help_text="The interface to manage the subscription.",
+        choices=MONEY_RULESTACK.models_choices(),
+        null=True,
+        blank=True,
+    )
+
     # -> Type comptable.
     accounting_type = models.CharField(
         max_length=255,
@@ -199,5 +234,107 @@ class TransfertModels(BaseMetadataModel):
     
     class Meta:
         verbose_name = "Transfert"
-        verbose_name_plural = "Transferts"    
+        verbose_name_plural = "Transferts"
 
+class SubscriptionTemplate(BaseMetadataModel):
+    """
+    Subscription model, to store the subscription.
+    """
+    interface = models.CharField(
+        max_length=100,
+        help_text="The interface to manage the subscription.",
+        choices=MONEY_RULESTACK.models_choices(),
+        null=True,
+        blank=True,
+    )
+
+    description = models.TextField(
+        help_text="The description of the subscription",
+        null=True,
+        blank=True,
+    )
+
+    price = models.ForeignKey(
+        Price,
+        on_delete=models.CASCADE,
+        help_text="The price of the subscription",
+        related_name='subscription_price',
+        null=True,
+        blank=True,
+    )
+
+    timdelta_type = models.CharField(
+        max_length=100,
+        default="day",
+        help_text="The duration type of the subscription.",
+        choices=(
+            ("day", "day"),
+            ("week", "week"),
+            ("month", "month"),
+            ("year", "year"),
+        ),
+    )
+
+    timdelta_number = models.PositiveBigIntegerField(
+        default=0,
+        help_text="The number of day, week, month or year.",
+    )
+
+    @property
+    def timedelta(self):
+        return timedelta(
+            **{self.timdelta_type: self.timdelta_number}
+        )
+    
+class Subscription(BaseMetadataModel):
+    """
+    Subscription model, to store the subscription.
+    """
+    interface = models.CharField(
+        max_length=100,
+        help_text="The interface to manage the subscription.",
+        choices=MONEY_RULESTACK.models_choices(),
+        null=True,
+        blank=True,
+    )
+
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='profile',
+        help_text="The profile",
+        null=True,
+        blank=True,
+    )
+
+    template = models.ForeignKey(
+        SubscriptionTemplate,
+        on_delete=models.CASCADE,
+        related_name='template',
+        help_text="The subscription template",
+        null=True,
+        blank=True,
+    )
+
+    status = models.CharField(
+        max_length=100,
+        default="active",
+        help_text="The status of the subscription",
+        choices=(
+            ("active", "active"),
+            ('pending', 'pending'),
+            ("inactive", "inactive"),
+        ),
+    )
+
+    begin_date = models.DateTimeField(
+        null=True,
+        help_text="Begin date of the subscription",
+        auto_now=False,
+    )
+
+    end_date = models.DateTimeField(
+        null=True,
+        help_text="End date of the subscription",
+        auto_now=False,
+    )
