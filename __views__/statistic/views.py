@@ -1,5 +1,5 @@
 
-from kernel.http import Response
+from gpm.http import Response
 
 from profiles.decorators import profile_required, load_profile
 

@@ -1,4 +1,4 @@
-from kernel.http import Response
+from gpm.http import Response
 
 def fetch_info(request):
     """

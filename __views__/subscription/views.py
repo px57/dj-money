@@ -1,6 +1,6 @@
 
 
-from kernel.http import load_response
+from gpm.http import load_response
 
 from profiles.decorators import load_profile
 

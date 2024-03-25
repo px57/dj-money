@@ -7,7 +7,7 @@ import os
 
 from money.rules.stack import MONEY_RULESTACK
 
-from kernel.interfaces.interfaces import InterfaceManager
+from gpm.interfaces.interfaces import InterfaceManager
 
 class DefaultRuleClass(InterfaceManager):
     """

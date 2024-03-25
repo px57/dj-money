@@ -4,7 +4,7 @@ from django.conf import settings
 
 from datetime import timedelta
 
-from kernel.models.base_metadata_model import BaseMetadataModel
+from gpm.models.base_metadata_model import BaseMetadataModel
 
 from profiles.models import Profile
 
